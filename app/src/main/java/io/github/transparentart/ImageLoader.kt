@@ -10,8 +10,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Decodes a gallery image, downscaled so its longest side is at most [maxSide]
- * and rotated upright according to its EXIF data.
+ * Decodes a gallery image scaled so its longest side is [maxSide] (small images
+ * are enlarged at most 4×) and rotated upright according to its EXIF data.
  */
 fun loadBitmap(context: Context, uri: Uri, maxSide: Int = 1280): Bitmap? {
     val resolver = context.contentResolver
@@ -36,9 +36,10 @@ fun loadBitmap(context: Context, uri: Uri, maxSide: Int = 1280): Bitmap? {
         0
     }
 
-    val scale = min(1f, maxSide.toFloat() / max(decoded.width, decoded.height))
+    // Small pictures are enlarged too: the sketch filter is tuned for this working size.
+    val scale = min(4f, maxSide.toFloat() / max(decoded.width, decoded.height))
     val matrix = Matrix().apply {
-        if (scale < 1f) postScale(scale, scale)
+        if (scale != 1f) postScale(scale, scale)
         if (rotation != 0) postRotate(rotation.toFloat())
     }
     if (matrix.isIdentity) return decoded
