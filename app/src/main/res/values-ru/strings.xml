@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pick_photo">Выбрать фото</string>
+    <string name="pick_photo_hint">Выберите картинку из галереи. Приложение превратит её в эскиз для карандаша и наложит поверх камеры, чтобы её можно было перевести на бумагу.</string>
+    <string name="load_failed">Не удалось открыть изображение</string>
+    <string name="hold_to_compare">Удерживайте картинку, чтобы увидеть оригинал</string>
+
+    <string name="detail">Детализация</string>
+    <string name="sensitivity">Чувствительность контуров</string>
+    <string name="thickness">Толщина линий</string>
+    <string name="shading_levels">Тона штриховки</string>
+    <string name="shading_off">выкл</string>
+    <string name="shading_strength">Насыщенность теней</string>
+    <string name="ink_color">Цвет линий</string>
+    <string name="start_tracing">Рисовать</string>
+
+    <string name="back">Назад</string>
+    <string name="opacity">Прозрачность</string>
+    <string name="lock">Закрепить положение картинки</string>
+    <string name="flip">Отразить</string>
+    <string name="toggle_overlay">Показать или скрыть картинку</string>
+    <string name="torch">Фонарик</string>
+    <string name="reset">Сбросить положение</string>
+    <string name="tap_to_hide">Нажмите на экран, чтобы скрыть панель. Двумя пальцами можно двигать, масштабировать и поворачивать картинку.</string>
+
+    <string name="camera_permission_needed">Нужен доступ к камере, чтобы видеть лист бумаги под картинкой.</string>
+    <string name="grant_permission">Разрешить камеру</string>
+    <string name="open_settings">Открыть настройки</string>
+</resources>
