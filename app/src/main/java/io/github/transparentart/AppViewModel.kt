@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -41,7 +42,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         private set
     var loadFailed by mutableStateOf(false)
         private set
+    var neuralFailed by mutableStateOf(false)
+        private set
 
+    private val neural = NeuralSketcher(app)
     private var processor: SketchProcessor? = null
     private var renderJob: Job? = null
 
@@ -57,7 +61,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
             renderJob?.cancel()
-            processor = withContext(Dispatchers.Default) { SketchProcessor(bitmap) }
+            processor = withContext(Dispatchers.Default) { SketchProcessor(bitmap, neural) }
             original = bitmap
             sketch = null
             trace = TraceState(alpha = trace.alpha)
@@ -68,6 +72,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun consumeLoadError() {
         loadFailed = false
+    }
+
+    fun consumeNeuralError() {
+        neuralFailed = false
     }
 
     fun updateParams(newParams: SketchParams) {
@@ -87,10 +95,25 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             processing = true
             try {
                 val p = params
-                sketch = withContext(Dispatchers.Default) { proc.render(p) }
+                sketch = try {
+                    withContext(Dispatchers.Default) { proc.render(p) }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    // Throwable: a missing native library surfaces as an Error, not an Exception.
+                    if (p.mode != SketchMode.NEURAL) throw e
+                    // The model could not run on this device: fall back to the classic filter.
+                    neuralFailed = true
+                    params = p.copy(mode = SketchMode.CLASSIC)
+                    withContext(Dispatchers.Default) { proc.render(params) }
+                }
             } finally {
                 if (isActive) processing = false
             }
         }
+    }
+
+    override fun onCleared() {
+        neural.close()
     }
 }

@@ -24,6 +24,21 @@ android {
         versionName = "0.1.0"
     }
 
+    // One APK per phone CPU type: ONNX Runtime ships a large native library for each.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a")
+            isUniversalApk = false
+        }
+    }
+
+    packaging {
+        // Compress native libraries inside the APK: a much smaller download.
+        jniLibs.useLegacyPackaging = true
+    }
+
     signingConfigs {
         if (keystoreProps.containsKey("storeFile")) {
             create("release") {
@@ -76,6 +91,7 @@ dependencies {
     implementation("androidx.camera:camera-view:$cameraX")
 
     implementation("androidx.exifinterface:exifinterface:1.3.7")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
 
     testImplementation("junit:junit:4.13.2")
 }

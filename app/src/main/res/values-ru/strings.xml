@@ -5,6 +5,16 @@
     <string name="load_failed">Не удалось открыть изображение</string>
     <string name="hold_to_compare">Удерживайте картинку, чтобы увидеть оригинал</string>
 
+    <string name="mode_neural">Нейросеть</string>
+    <string name="mode_classic">Классический</string>
+    <string name="mode_neural_hint">Рисует как художник. Лучше всего для фотографий. Работает офлайн на телефоне, может занять несколько секунд.</string>
+    <string name="mode_classic_hint">Быстрый фильтр по контурам и границам цветов. Подходит для рисунков, логотипов и простых картинок.</string>
+    <string name="neural_failed">Нейросеть не запустилась на этом устройстве, включён классический фильтр</string>
+    <string name="style_contour">Контуры</string>
+    <string name="style_sketch">Набросок</string>
+    <string name="cleanliness">Чистота линий</string>
+    <string name="darkness">Насыщенность линий</string>
+
     <string name="detail">Детализация</string>
     <string name="sensitivity">Чувствительность контуров</string>
     <string name="thickness">Толщина линий</string>

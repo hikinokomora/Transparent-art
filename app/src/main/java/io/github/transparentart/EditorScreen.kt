@@ -30,10 +30,14 @@ import androidx.compose.material.icons.outlined.Draw
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -73,6 +77,13 @@ fun EditorScreen(vm: AppViewModel, onStartTracing: () -> Unit) {
         if (vm.loadFailed) {
             vm.consumeLoadError()
             snackbar.showSnackbar(failedText)
+        }
+    }
+    val neuralFailedText = stringResource(R.string.neural_failed)
+    LaunchedEffect(vm.neuralFailed) {
+        if (vm.neuralFailed) {
+            vm.consumeNeuralError()
+            snackbar.showSnackbar(neuralFailedText)
         }
     }
 
@@ -179,6 +190,7 @@ private fun SketchPreview(original: Bitmap, sketch: Bitmap?, busy: Boolean, modi
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Controls(
     params: SketchParams,
@@ -192,14 +204,49 @@ private fun Controls(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+            val modes = listOf(SketchMode.NEURAL to R.string.mode_neural, SketchMode.CLASSIC to R.string.mode_classic)
+            modes.forEachIndexed { index, (mode, label) ->
+                SegmentedButton(
+                    selected = params.mode == mode,
+                    onClick = { onChange(params.copy(mode = mode)) },
+                    shape = SegmentedButtonDefaults.itemShape(index, modes.size),
+                ) { Text(stringResource(label)) }
+            }
+        }
+        Text(
+            stringResource(if (params.mode == SketchMode.NEURAL) R.string.mode_neural_hint else R.string.mode_classic_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 8.dp),
+        )
         Text(
             stringResource(R.string.hold_to_compare),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        LabeledSlider(stringResource(R.string.detail), params.detail, { onChange(params.copy(detail = it)) })
-        LabeledSlider(stringResource(R.string.sensitivity), params.sensitivity, { onChange(params.copy(sensitivity = it)) })
-        LabeledSlider(stringResource(R.string.thickness), params.thickness, { onChange(params.copy(thickness = it)) })
+
+        if (params.mode == SketchMode.NEURAL) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(top = 8.dp),
+            ) {
+                listOf(NeuralStyle.CONTOUR to R.string.style_contour, NeuralStyle.SKETCH to R.string.style_sketch)
+                    .forEach { (style, label) ->
+                        FilterChip(
+                            selected = params.style == style,
+                            onClick = { onChange(params.copy(style = style)) },
+                            label = { Text(stringResource(label)) },
+                        )
+                    }
+            }
+            LabeledSlider(stringResource(R.string.cleanliness), params.cleanliness, { onChange(params.copy(cleanliness = it)) })
+            LabeledSlider(stringResource(R.string.darkness), params.darkness, { onChange(params.copy(darkness = it)) })
+        } else {
+            LabeledSlider(stringResource(R.string.detail), params.detail, { onChange(params.copy(detail = it)) })
+            LabeledSlider(stringResource(R.string.sensitivity), params.sensitivity, { onChange(params.copy(sensitivity = it)) })
+            LabeledSlider(stringResource(R.string.thickness), params.thickness, { onChange(params.copy(thickness = it)) })
+        }
 
         val shadingOn = params.shadeLevels >= 2
         LabeledSlider(

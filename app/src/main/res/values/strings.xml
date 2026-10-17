@@ -7,6 +7,16 @@
     <string name="load_failed">Couldn\'t open this image</string>
     <string name="hold_to_compare">Touch and hold the picture to see the original</string>
 
+    <string name="mode_neural">Neural network</string>
+    <string name="mode_classic">Classic</string>
+    <string name="mode_neural_hint">Draws like an artist. Best for photos. Runs offline on the phone and may take a few seconds.</string>
+    <string name="mode_classic_hint">Fast filter based on edges and colour borders. Good for drawings, logos and simple pictures.</string>
+    <string name="neural_failed">The neural network could not run on this device, switched to the classic filter</string>
+    <string name="style_contour">Outlines</string>
+    <string name="style_sketch">Sketch</string>
+    <string name="cleanliness">Cleanliness</string>
+    <string name="darkness">Line strength</string>
+
     <string name="detail">Detail</string>
     <string name="sensitivity">Line sensitivity</string>
     <string name="thickness">Line thickness</string>
