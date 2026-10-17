@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1] - 2026-10-17
+
+### Исправлено
+- Падение при обработке фото нейросетью в release-сборке: оптимизатор кода переименовывал классы ONNX Runtime
+
+### Изменено
+- У каждой архитектуры свой код версии (`versionCode * 10 + n`), сборку одной архитектуры можно выбрать параметром `-Pabi`
+- Метаданные для F-Droid: описание, иконка, `.fdroid.yml`
+
 ## [0.2.0] - 2026-10-17
 
 ### Добавлено
@@ -34,5 +43,6 @@
 - Экран не гаснет во время рисования
 - Русский и английский интерфейс
 
+[0.2.1]: https://github.com/hikinokomora/Transparent-art/releases/tag/v0.2.1
 [0.2.0]: https://github.com/hikinokomora/Transparent-art/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hikinokomora/Transparent-art/releases/tag/v0.1.0
