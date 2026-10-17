@@ -1,0 +1,2 @@
+* Fixed a crash when processing a photo with the neural network
+* Per-ABI version codes for F-Droid builds

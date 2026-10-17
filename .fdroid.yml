@@ -1,0 +1,42 @@
+# Build metadata for F-Droid (copy of metadata/io.github.transparentart.yml in fdroiddata).
+# Test locally with: fdroid build --verbose io.github.transparentart
+Categories:
+  - Graphics
+License: MIT
+AuthorName: hikinokomora
+SourceCode: https://github.com/hikinokomora/Transparent-art
+IssueTracker: https://github.com/hikinokomora/Transparent-art/issues
+Changelog: https://github.com/hikinokomora/Transparent-art/blob/main/CHANGELOG.md
+
+AutoName: Transparent Art
+
+RepoType: git
+Repo: https://github.com/hikinokomora/Transparent-art.git
+
+Builds:
+  - versionName: 0.2.1
+    versionCode: 31
+    commit: v0.2.1
+    subdir: app
+    gradle:
+      - yes
+    gradleprops:
+      - abi=armeabi-v7a
+
+  - versionName: 0.2.1
+    versionCode: 32
+    commit: v0.2.1
+    subdir: app
+    gradle:
+      - yes
+    gradleprops:
+      - abi=arm64-v8a
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+VercodeOperation:
+  - 10*%c+1
+  - 10*%c+2
+UpdateCheckData: app/build.gradle.kts|versionCode\s*=\s*(\d+)|.|versionName\s*=\s*"([\d.]+)"
+CurrentVersion: 0.2.1
+CurrentVersionCode: 32

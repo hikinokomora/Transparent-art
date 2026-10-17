@@ -1,0 +1,17 @@
+<p>Transparent Art helps you redraw any picture on paper.</p>
+<ol>
+<li>Pick a photo from your gallery. The app turns it into a line drawing for pencil.</li>
+<li>Choose a mode and style, adjust the lines, shading and colour.</li>
+<li>Tap <b>Start drawing</b>. The sketch is laid semi-transparently over the camera. Put the phone on a stand 20–30 cm above the paper, fit the picture with your fingers, lock it and trace.</li>
+</ol>
+<p><b>Features</b></p>
+<ul>
+<li>Neural mode for photos: the open Informative Drawings model draws the photo the way an artist would. Two styles: Outlines and Sketch. Runs fully offline on the phone.</li>
+<li>Classic mode for drawings, logos and simple pictures: a fast filter based on edges and colour borders.</li>
+<li>Line cleanliness and strength, 2–5 shading tones, line colour</li>
+<li>Camera overlay with adjustable opacity</li>
+<li>Pinch, drag and rotate the picture, lock its position</li>
+<li>Mirror, flashlight, quick hide of the picture</li>
+<li>The screen stays on while you draw</li>
+</ul>
+<p>No ads, no accounts, no internet access: all processing happens on the device.</p>
