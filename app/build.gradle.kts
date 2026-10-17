@@ -1,3 +1,4 @@
+import com.android.build.api.variant.FilterConfiguration
 import java.util.Properties
 
 plugins {
@@ -11,6 +12,11 @@ val keystoreProps = Properties().apply {
     val file = rootProject.file("keystore.properties")
     if (file.exists()) file.inputStream().use { load(it) }
 }
+
+// Every ABI gets its own APK and version code (versionCode * 10 + n), as F-Droid requires.
+// A single one can be built with -Pabi=arm64-v8a.
+val abiVersionCodes = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2)
+val abis = providers.gradleProperty("abi").orNull?.let { listOf(it) } ?: abiVersionCodes.keys.toList()
 
 android {
     namespace = "io.github.transparentart"
@@ -29,7 +35,7 @@ android {
         abi {
             isEnable = true
             reset()
-            include("arm64-v8a", "armeabi-v7a")
+            include(*abis.toTypedArray())
             isUniversalApk = false
         }
     }
@@ -71,6 +77,16 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            val abi = output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier
+            val base = output.versionCode.orNull ?: 0
+            output.versionCode.set(base * 10 + (abiVersionCodes[abi] ?: 0))
+        }
     }
 }
 
