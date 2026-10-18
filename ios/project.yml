@@ -1,0 +1,76 @@
+# Xcode project description for XcodeGen (https://github.com/yonaskolb/XcodeGen).
+#   brew install xcodegen
+#   cd ios && xcodegen generate && open TransparentArt.xcodeproj
+name: TransparentArt
+
+options:
+  bundleIdPrefix: io.github.transparentart
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+
+packages:
+  onnxruntime:
+    url: https://github.com/microsoft/onnxruntime-swift-package-manager
+    exactVersion: 1.20.0
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.2.1"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  TransparentArt:
+    type: application
+    platform: iOS
+    sources:
+      - path: TransparentArt
+      # The same models as in the Android app, shipped as the folder "models".
+      - path: ../app/src/main/assets/models
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: onnxruntime
+        product: onnxruntime
+    info:
+      path: Generated/TransparentArt-Info.plist
+      properties:
+        CFBundleDisplayName: Transparent Art
+        CFBundleLocalizations: [en, ru]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSCameraUsageDescription: Transparent Art shows the camera under the picture so you can trace it on paper.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.transparentart
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  TransparentArtTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: TransparentArtTests
+    dependencies:
+      - target: TransparentArt
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.transparentart.tests
+
+schemes:
+  TransparentArt:
+    build:
+      targets:
+        TransparentArt: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - TransparentArtTests
+    archive:
+      config: Release

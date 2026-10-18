@@ -1,0 +1,7 @@
+*.xcodeproj
+Generated/
+build/
+DerivedData/
+xcuserdata/
+*.ipa
+test.log
