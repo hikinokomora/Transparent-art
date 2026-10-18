@@ -1,0 +1,71 @@
+name: iOS
+
+on:
+  push:
+    branches: [main, ios]
+    paths:
+      - "ios/**"
+      - "app/src/main/assets/models/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+      - "app/src/main/assets/models/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Test on a simulator
+        working-directory: ios
+        run: |
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          print(next(d['name'] for runtime, ds in devices.items() if 'iOS' in runtime for d in ds if d['name'].startswith('iPhone')))
+          ")
+          echo "Simulator: $DEVICE"
+          set -o pipefail
+          xcodebuild test \
+            -project TransparentArt.xcodeproj \
+            -scheme TransparentArt \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
+            CODE_SIGNING_ALLOWED=NO | tee test.log | tail -n 60
+
+      - name: Build an unsigned IPA
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project TransparentArt.xcodeproj \
+            -scheme TransparentArt \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" | tail -n 30
+          rm -rf Payload && mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/TransparentArt.app Payload/
+          zip -qry TransparentArt-unsigned.ipa Payload
+          ls -lh TransparentArt-unsigned.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TransparentArt-unsigned-ipa
+          path: ios/TransparentArt-unsigned.ipa
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: xcodebuild-log
+          path: ios/test.log
